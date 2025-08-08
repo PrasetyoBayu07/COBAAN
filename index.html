@@ -3,38 +3,288 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DSRT Studio - Landing Page</title>
-  <link rel="stylesheet" href="css/global.css" />
+  <title>DSRT Manual Tools Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 10px;
+      background: #f5f5f5;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    canvas {
+      width: 100%;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      background: white;
+      display: block;
+      user-select: none;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    button {
+      margin: 5px 5px 15px 0;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #upload {
+      margin-bottom: 10px;
+    }
+    .buttons {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Selamat Datang di DSRT Studio</h1>
-    <nav>
-      <ul>
-        <li><a href="fitur/manual-tools/index.html">Manual Tools</a></li>
-        <li><a href="#">Fitur Lain</a></li>
-        <li><a href="#">Kontak</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <main>
-    <section>
-      <h2>Fitur Unggulan</h2>
-      <p>Pilih fitur yang ingin kamu gunakan:</p>
-      <ul>
-        <li><a href="fitur/manual-tools/index.html">Manual Tools - Edit Foto Basic</a></li>
-        <li><a href="#">Preset Capsule</a></li>
-        <li><a href="#">Restore AI</a></li>
-        <!-- Tambah fitur lain di sini -->
-      </ul>
-    </section>
-  </main>
+  <h1>DSRT Manual Tools Tester</h1>
 
-  <footer>
-    <p>&copy; 2025 DSRT Studio</p>
-  </footer>
+  <input type="file" id="upload" accept="image/*" />
 
-  <script src="js/global.js"></script>
+  <canvas id="canvas"></canvas>
+
+  <label for="brightness">Brightness (-100 to 100)</label>
+  <input type="range" id="brightness" min="-100" max="100" value="0" />
+
+  <label for="contrast">Contrast (-100 to 100)</label>
+  <input type="range" id="contrast" min="-100" max="100" value="0" />
+
+  <label for="saturation">Saturation (-100 to 100)</label>
+  <input type="range" id="saturation" min="-100" max="100" value="0" />
+
+  <label for="rotate">Rotate (degrees)</label>
+  <input type="range" id="rotate" min="0" max="360" value="0" />
+
+  <div class="buttons">
+    <button id="crop-btn">Crop 300x300 Center</button>
+    <button id="reset-btn">Reset</button>
+    <button id="undo-btn">Undo</button>
+    <button id="save-btn">Save Image</button>
+  </div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const uploadInput = document.getElementById('upload');
+  const brightnessSlider = document.getElementById('brightness');
+  const contrastSlider = document.getElementById('contrast');
+  const saturationSlider = document.getElementById('saturation');
+  const rotateSlider = document.getElementById('rotate');
+
+  const cropBtn = document.getElementById('crop-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  const undoBtn = document.getElementById('undo-btn');
+  const saveBtn = document.getElementById('save-btn');
+
+  let img = new Image();
+  let originalImageData = null;
+
+  let historyStack = [];
+  const maxHistory = 20;
+  let isApplyingFilter = false;
+
+  const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+  const clampFloat = (v, min, max) => Math.min(Math.max(v, min), max);
+
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; } 
+    else {
+      let d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch(max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return [h, s, l];
+  }
+
+  function hslToRgb(h, s, l) {
+    let r, g, b;
+    if(s === 0) { r = g = b = l; }
+    else {
+      function hue2rgb(p, q, t) {
+        if(t < 0) t += 1;
+        if(t > 1) t -= 1;
+        if(t < 1/6) return p + (q - p) * 6 * t;
+        if(t < 1/2) return q;
+        if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      }
+      let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      let p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+    }
+    return [r * 255, g * 255, b * 255];
+  }
+
+  function saveState() {
+    try {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      historyStack.push(imageData);
+      if (historyStack.length > maxHistory) historyStack.shift();
+    } catch(e) {}
+  }
+
+  function undo() {
+    if (historyStack.length > 1) {
+      historyStack.pop();
+      const previous = historyStack[historyStack.length - 1];
+      ctx.putImageData(previous, 0, 0);
+    }
+  }
+
+  function applyFilters() {
+    if (isApplyingFilter) return;
+    isApplyingFilter = true;
+
+    const brightness = Number(brightnessSlider.value);
+    const contrast = Number(contrastSlider.value);
+    const saturation = Number(saturationSlider.value);
+    const rotate = Number(rotateSlider.value);
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate((rotate * Math.PI) / 180);
+    ctx.translate(-canvas.width / 2, -canvas.height / 2);
+    ctx.drawImage(img, 0, 0);
+    ctx.restore();
+
+    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let data = imageData.data;
+
+    const bFactor = (brightness + 100) / 100;
+    const cFactor = (contrast + 100) / 100;
+    const sFactor = (saturation + 100) / 100;
+
+    for (let i = 0; i < data.length; i += 4) {
+      data[i] = clamp(data[i] * bFactor, 0, 255);
+      data[i+1] = clamp(data[i+1] * bFactor, 0, 255);
+      data[i+2] = clamp(data[i+2] * bFactor, 0, 255);
+
+      data[i] = clamp(((data[i] - 128) * cFactor + 128), 0, 255);
+      data[i+1] = clamp(((data[i+1] - 128) * cFactor + 128), 0, 255);
+      data[i+2] = clamp(((data[i+2] - 128) * cFactor + 128), 0, 255);
+
+      let [h, s, l] = rgbToHsl(data[i], data[i+1], data[i+2]);
+      s = clampFloat(s * sFactor, 0, 1);
+      let [r, g, b] = hslToRgb(h, s, l);
+      data[i] = clamp(r, 0, 255);
+      data[i+1] = clamp(g, 0, 255);
+      data[i+2] = clamp(b, 0, 255);
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    saveState();
+
+    isApplyingFilter = false;
+  }
+
+  function cropCenter() {
+    const cropWidth = 300;
+    const cropHeight = 300;
+    const sx = (canvas.width - cropWidth) / 2;
+    const sy = (canvas.height - cropHeight) / 2;
+
+    try {
+      const cropped = ctx.getImageData(sx, sy, cropWidth, cropHeight);
+      canvas.width = cropWidth;
+      canvas.height = cropHeight;
+      ctx.putImageData(cropped, 0, 0);
+      saveState();
+    } catch (e) {
+      alert('Crop gagal, ukuran gambar terlalu kecil.');
+    }
+  }
+
+  function resetAll() {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+
+    brightnessSlider.value = 0;
+    contrastSlider.value = 0;
+    saturationSlider.value = 0;
+    rotateSlider.value = 0;
+
+    historyStack = [];
+    saveState();
+  }
+
+  function saveImage() {
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = 'dsrt-edited.png';
+    link.href = dataURL;
+    link.click();
+  }
+
+  uploadInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      img = new Image();
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        brightnessSlider.value = 0;
+        contrastSlider.value = 0;
+        saturationSlider.value = 0;
+        rotateSlider.value = 0;
+        historyStack = [];
+        saveState();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  brightnessSlider.addEventListener('input', applyFilters);
+  contrastSlider.addEventListener('input', applyFilters);
+  saturationSlider.addEventListener('input', applyFilters);
+  rotateSlider.addEventListener('input', applyFilters);
+
+  cropBtn.addEventListener('click', cropCenter);
+  resetBtn.addEventListener('click', resetAll);
+  undoBtn.addEventListener('click', undo);
+  saveBtn.addEventListener('click', saveImage);
+})();
+</script>
+
 </body>
 </html>
