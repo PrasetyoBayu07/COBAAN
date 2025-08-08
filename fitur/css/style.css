@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, sans-serif;
+  max-width: 700px;
+  margin: 1rem auto;
+  padding: 1rem;
+  background: #f9f9f9;
+  color: #222;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto 1rem auto;
+  border: 1px solid #ccc;
+  max-width: 100%;
+  height: auto;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.controls label {
+  font-weight: bold;
+}
+
+.controls input[type="range"], 
+.controls input[type="file"] {
+  width: 100%;
+}
+
+.controls button {
+  grid-column: span 2;
+  padding: 0.7rem;
+  font-size: 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+  background: #0056b3;
+}
+
+.about-section {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+@media (max-width: 480px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
