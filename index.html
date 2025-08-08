@@ -3,52 +3,164 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>DSRT - Manual Editing Tools</title>
-<link rel="stylesheet" href="css/style.css" />
+<title>DSRT - Digital Smart Revise Technology</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(0,0,0,0.25);
+  }
+  header .logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+  }
+  header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+  }
+  header nav a:hover {
+    opacity: 0.7;
+  }
+
+  main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+  }
+
+  main h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 5px;
+  }
+  main h2 {
+    font-weight: 300;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+  }
+  main button.cta {
+    background: #ff6f61;
+    border: none;
+    color: white;
+    padding: 1rem 2.5rem;
+    font-size: 1.25rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  main button.cta:hover {
+    background: #ff3b2e;
+  }
+
+  section.features {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 1.5rem;
+    text-align: left;
+  }
+  section.features .feature-box {
+    background: rgba(255 255 255 / 0.15);
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: background 0.3s ease;
+  }
+  section.features .feature-box:hover {
+    background: rgba(255 255 255 / 0.3);
+  }
+  section.features h3 {
+    margin-top: 0;
+    font-weight: 700;
+  }
+  section.features p {
+    font-weight: 300;
+  }
+
+  footer {
+    background: rgba(0,0,0,0.3);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
+  /* Responsive */
+  @media(max-width: 600px){
+    main h1 {
+      font-size: 2.2rem;
+    }
+    main h2 {
+      font-size: 1.1rem;
+    }
+    header {
+      padding: 1rem;
+    }
+  }
+</style>
 </head>
 <body>
 
 <header>
-  <h1>DSRT - Digital Smart Revise Technology</h1>
-  <p>Coba Sekarang Edit Foto Dengan Mudah</p>
+  <div class="logo">DSRT</div>
+  <nav>
+    <a href="#features">Fitur</a>
+    <a href="#about">Tentang Kami</a>
+    <a href="#login">Login</a>
+  </nav>
 </header>
 
 <main>
-  <section class="editor-section">
-    <canvas id="canvas"></canvas>
+  <h1>DSRT</h1>
+  <h2>Digital Smart Revise Technology</h2>
+  <button class="cta" onclick="alert('Mulai coba sekarang!')">Coba Sekarang</button>
 
-    <div class="controls">
-      <label for="brightness">Brightness</label>
-      <input type="range" id="brightness" min="-100" max="100" value="0" />
-
-      <label for="contrast">Contrast</label>
-      <input type="range" id="contrast" min="-100" max="100" value="0" />
-
-      <label for="saturation">Saturation</label>
-      <input type="range" id="saturation" min="-100" max="100" value="0" />
-
-      <label for="rotate">Rotate (derajat)</label>
-      <input type="range" id="rotate" min="0" max="360" value="0" />
-
-      <button id="crop-btn">Crop 300x300</button>
-      <button id="reset-btn">Reset</button>
-      <button id="undo-btn">Undo</button>
-
-      <label for="upload">Upload Foto</label>
-      <input type="file" id="upload" accept="image/*" />
-      
-      <button id="download-btn">Download</button>
+  <section id="features" class="features">
+    <div class="feature-box">
+      <h3>Manual Tools</h3>
+      <p>Editing foto manual dengan tools lengkap seperti brightness, contrast, crop, rotate, dan banyak lagi.</p>
+    </div>
+    <div class="feature-box">
+      <h3>AI Restoration</h3>
+      <p>Perbaikan foto otomatis menggunakan teknologi AI terkini, hasil tajam dan natural.</p>
+    </div>
+    <div class="feature-box">
+      <h3>Cloud Storage</h3>
+      <p>Simpan hasil editing di cloud dengan keamanan tinggi dan akses mudah.</p>
     </div>
   </section>
 
-  <section class="about-section">
-    <h2>Tentang Kami</h2>
-    <p>DSRT membantu Anda melakukan editing foto manual yang mudah dan cepat dengan teknologi digital terbaru.</p>
-    <p>© DSRT 2025</p>
+  <section id="about" style="margin-top:3rem; text-align:left; max-width:700px; margin-left:auto; margin-right:auto;">
+    <h3>Tentang Kami</h3>
+    <p>DSRT adalah platform editing foto yang menggabungkan kekuatan manual tools dan teknologi AI untuk hasil maksimal. Kami berkomitmen menjaga keamanan dan kemudahan akses bagi semua pengguna.</p>
   </section>
 </main>
 
-<script type="module" src="js/main.js"></script>
+<footer>
+  © DSRT 2025. All rights reserved.
+</footer>
 
 </body>
 </html>
