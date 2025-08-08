@@ -1,223 +1,54 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DSRT - Digital Smart Revise Technology</title>
-  <style>
-    /* Reset & base */
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f7fb;
-      color: #222;
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* Header */
-    header {
-      background: #007bff;
-      color: white;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      font-size: 1.3rem;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
-    }
-    header nav a {
-      margin-left: 1rem;
-      font-weight: 600;
-    }
-
-    /* Main container */
-    main {
-      flex-grow: 1;
-      max-width: 900px;
-      margin: 2rem auto 3rem;
-      padding: 0 1rem;
-      text-align: center;
-    }
-
-    /* Judul besar */
-    main h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.3rem;
-      color: #007bff;
-      letter-spacing: 1.2px;
-    }
-    main p.lead {
-      font-size: 1.2rem;
-      color: #555;
-      margin-bottom: 2rem;
-      font-weight: 500;
-    }
-
-    /* Tombol utama */
-    .btn-primary {
-      background-color: #007bff;
-      color: white;
-      padding: 1rem 2.5rem;
-      border: none;
-      border-radius: 30px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      user-select: none;
-      box-shadow: 0 6px 14px rgba(0, 123, 255, 0.4);
-      margin-bottom: 3rem;
-    }
-    .btn-primary:hover {
-      background-color: #0056b3;
-      box-shadow: 0 8px 20px rgba(0, 86, 179, 0.7);
-    }
-
-    /* Grid fitur */
-    .content-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1.8rem;
-      max-width: 700px;
-      margin: 0 auto 3rem;
-      text-align: center;
-    }
-    .feature-item {
-      background: white;
-      padding: 1.7rem 1rem;
-      border-radius: 14px;
-      box-shadow: 0 5px 18px rgba(0,0,0,0.1);
-      font-size: 1.3rem;
-      color: #007bff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      min-height: 130px;
-    }
-    .feature-item:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0,123,255,0.35);
-    }
-    .feature-item span.icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.6rem;
-      user-select: none;
-    }
-
-    /* Bagian kata kata (tentang kami) */
-    .about {
-      max-width: 700px;
-      margin: 3rem auto 6rem;
-      font-size: 1rem;
-      color: #444;
-      text-align: justify;
-      line-height: 1.6;
-      padding: 0 1rem;
-    }
-
-    /* Footer */
-    footer {
-      background: #007bff;
-      color: white;
-      padding: 1rem 0;
-      text-align: center;
-      font-size: 0.9rem;
-      font-weight: 600;
-      box-shadow: 0 -3px 8px rgba(0,0,0,0.1);
-      user-select: none;
-    }
-
-    /* Responsive text sizes */
-    @media (max-width: 480px) {
-      main h1 {
-        font-size: 2rem;
-      }
-      .feature-item {
-        font-size: 1.1rem;
-      }
-      .feature-item span.icon {
-        font-size: 2rem;
-      }
-      .btn-primary {
-        padding: 0.85rem 2rem;
-        font-size: 1rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DSRT - Manual Editing Tools</title>
+<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
 <header>
-  <div>DSRT</div>
-  <nav>
-    <a href="#login">Login</a>
-  </nav>
+  <h1>DSRT - Digital Smart Revise Technology</h1>
+  <p>Coba Sekarang Edit Foto Dengan Mudah</p>
 </header>
 
 <main>
-  <h1>DSRT</h1>
-  <p class="lead">Digital Smart Revise Technology</p>
+  <section class="editor-section">
+    <canvas id="canvas"></canvas>
 
-  <button class="btn-primary" onclick="alert('Mulai coba fitur DSRT sekarang!')">Coba Sekarang</button>
+    <div class="controls">
+      <label for="brightness">Brightness</label>
+      <input type="range" id="brightness" min="-100" max="100" value="0" />
 
-  <div class="content-grid" aria-label="Fitur utama DSRT">
-    <div class="feature-item" tabindex="0" aria-label="Preset Capsule">
-      <span class="icon">🛠️</span>
-      Preset Capsule
-    </div>
-    <div class="feature-item" tabindex="0" aria-label="Manual Tools">
-      <span class="icon">🎨</span>
-      Manual Tools
-    </div>
-    <div class="feature-item" tabindex="0" aria-label="Maintenance & Update">
-      <span class="icon">🛎️</span>
-      Maintenance & Update
-    </div>
-    <div class="feature-item" tabindex="0" aria-label="Keamanan Platform">
-      <span class="icon">🔒</span>
-      Keamanan Platform
-    </div>
-    <div class="feature-item" tabindex="0" aria-label="Dashboard Admin">
-      <span class="icon">📊</span>
-      Dashboard Admin
-    </div>
-    <div class="feature-item" tabindex="0" aria-label="Cloud Storage">
-      <span class="icon">☁️</span>
-      Cloud Storage
-    </div>
-  </div>
+      <label for="contrast">Contrast</label>
+      <input type="range" id="contrast" min="-100" max="100" value="0" />
 
-  <section class="about" aria-labelledby="about-title">
-    <h2 id="about-title">Tentang Kami</h2>
-    <p>
-      DSRT (Digital Smart Revise Technology) adalah platform inovatif yang menyediakan alat-alat canggih untuk mengedit dan memulihkan foto secara manual maupun otomatis dengan teknologi AI terbaru. Kami berkomitmen untuk memberikan pengalaman terbaik dengan fitur-fitur yang mudah digunakan, aman, dan dapat diakses dari perangkat apa pun.
-    </p>
-    <p>
-      Dengan DSRT, kamu dapat memulihkan foto lama, memperbaiki kualitas gambar, dan menambahkan sentuhan kreatif sesuai kebutuhanmu. Platform ini dirancang untuk para profesional maupun pemula yang ingin hasil maksimal tanpa ribet.
-    </p>
+      <label for="saturation">Saturation</label>
+      <input type="range" id="saturation" min="-100" max="100" value="0" />
+
+      <label for="rotate">Rotate (derajat)</label>
+      <input type="range" id="rotate" min="0" max="360" value="0" />
+
+      <button id="crop-btn">Crop 300x300</button>
+      <button id="reset-btn">Reset</button>
+      <button id="undo-btn">Undo</button>
+
+      <label for="upload">Upload Foto</label>
+      <input type="file" id="upload" accept="image/*" />
+      
+      <button id="download-btn">Download</button>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>Tentang Kami</h2>
+    <p>DSRT membantu Anda melakukan editing foto manual yang mudah dan cepat dengan teknologi digital terbaru.</p>
+    <p>© DSRT 2025</p>
   </section>
 </main>
 
-<footer>
-  &copy; 2025 DSRT. Semua hak cipta dilindungi.
-</footer>
+<script type="module" src="js/main.js"></script>
 
 </body>
 </html>
